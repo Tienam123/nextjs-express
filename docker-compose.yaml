@@ -1,0 +1,27 @@
+version: "3"
+services:
+  nextjs:
+    build: .
+    container_name: nextjs
+    networks:
+      - my-network
+
+
+  nginx:
+    image: nginx:alpine
+    container_name: nginx
+    ports:
+      - "80:80"
+    volumes:
+      - ./docker/nginx/default.conf:/etc/nginx/nginx.conf
+    depends_on:
+      - nextjs
+    networks:
+      - my-network
+
+
+
+
+networks:
+  my-network:
+    driver: bridge
