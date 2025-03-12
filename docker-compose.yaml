@@ -1,11 +1,24 @@
 version: "3"
 services:
   nextjs:
-    build: .
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
     container_name: nextjs
     networks:
       - my-network
 
+  node:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: node
+    ports:
+      - 9000:9000
+    volumes:
+      - ./backend:/app
+    networks:
+      - my-network
 
   nginx:
     image: nginx:alpine
@@ -19,8 +32,41 @@ services:
     networks:
       - my-network
 
+  db:
+    image: mysql:5.7
+    container_name: "${APP_NAME}-mysql"
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_PASSWORD: ${DB_PASSWORD}
+      MYSQL_USER: ${DB_USERNAME}
+    command: --character-set-server=utf8 --collation-server=utf8_general_ci
+    ports:
+      - "3306:3306"
+    volumes:
+      - ./docker/mysql/init:/docker-entrypoint-initdb.d
+      - ./docker/mysql/db_data:/var/lib/mysql
+    networks:
+      - my-network
 
-
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    container_name: "${APP_NAME}-phpmyadmin"
+    links:
+      - db
+    environment:
+      PMA_HOST: db
+      PMA_PORT: 3306
+      PMA_USER: "root"
+      PMA_PASSWORD: "root"
+      PMA_ARBITRARY: 1
+      UPLOAD_LIMIT: 300M
+    restart: always
+    volumes:
+      - ./docker/phpmyadmin/config.user.inc.php:/etc/phpmyadmin/config.user.inc.php
+    ports:
+      - 8081:80
+    networks:
+      - my-network
 
 networks:
   my-network:

@@ -4,7 +4,7 @@
 import {useFormik} from "formik";
 import {createPostAction} from "@/actions/contacts";
 
-const Contacts = ({}) => {
+const FormAddContact = ({}) => {
     const initialState  = {
         title: '',
         body:''
@@ -27,4 +27,4 @@ const Contacts = ({}) => {
 };
 
 
-export default Contacts;
+export default FormAddContact;
