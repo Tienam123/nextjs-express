@@ -1,7 +1,6 @@
 import express, {Express} from "express";
 import {Server} from "http";
 import cors from 'cors';
-import {json} from 'body-parser'
 import {UsersController} from "./users/users.controller";
 import {ExceptionFilter} from "./erorrs/exception.filter";
 import {ILogger} from "./logger/logger.interface";
