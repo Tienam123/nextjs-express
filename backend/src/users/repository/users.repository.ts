@@ -13,7 +13,7 @@ export class UsersRepository implements IUserRepository {
     }
 
     async create({email, password, name}: User): Promise<UserModel> {
-        return await this.prismaService.client.userModel.create({
+        return  this.prismaService.client.userModel.create({
             data: {
                 email,
                 password,
@@ -23,11 +23,11 @@ export class UsersRepository implements IUserRepository {
     };
 
     async find(email: string): Promise<UserModel | null> {
-        return await this.prismaService.client.userModel.findFirst({
+        return this.prismaService.client.userModel.findFirst({
             where: {
                 email
             }
-        })
+        });
     };
 
 

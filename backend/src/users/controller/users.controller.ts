@@ -8,7 +8,6 @@ import 'reflect-metadata'
 import {IUsersController} from "./users.controller.interface";
 import {UserLoginDto} from "../dto/user-login.dto";
 import {UserRegisterDto} from "../dto/user-register.dto";
-import {User} from "../entity/user.entity";
 import {UsersService} from "../service/users.service";
 import {ValidateMiddleware} from "../../common/middleware/validate.middleware";
 
@@ -26,19 +25,30 @@ export class UsersController extends BaseController implements IUsersController 
                 func: this.register,
                 middlewares: [new ValidateMiddleware(UserRegisterDto)]
             },
-            {path: '/login', method: 'post', func: this.login},
-            {path: '/:id/create', method: 'put', func: this.getUser}
+            {
+                path: '/login',
+                method: 'post',
+                func: this.login,
+                middlewares: [new ValidateMiddleware(UserLoginDto)]
+            },
         ])
     }
 
-    login(req: Request<{}, {}, UserLoginDto>, res: Response, next: NextFunction): void {
-        console.log(req.body)
-        next(new HttpError(401, 'Unauthorized', 'http://localhost:9000/users/login'))
+  async  login(req: Request<{}, {}, UserLoginDto>, res: Response, next: NextFunction): Promise<void> {
+        const result = await this.usersService.validateUser(req.body);
+      console.log(result)
+      if (!result) {
+       return next(new HttpError(401, 'Unauthorized', `${req.body.email}`));
+      }
+      const response = {
+          code:200,
+          message:'Вы успешно авторизовались'
+      }
+      this.ok(res,response)
     }
 
     async register({body}: Request<{}, {}, UserRegisterDto>, res: Response, next: NextFunction) {
         const result = await this.usersService.createUser(body);
-
         if (!result) {
             return next(new HttpError(422, 'Такой пользователь уже существует'));
         }
@@ -46,10 +56,7 @@ export class UsersController extends BaseController implements IUsersController 
             id: result.id,
             email: result.email
         }
-        this.created(res,'Пользователь создан',data);
+        this.created(res, 'Пользователь создан', data);
     }
 
-    async getUser(req: Request, res: Response, next: NextFunction) {
-        this.ok(res, 'mesage')
-    }
 }

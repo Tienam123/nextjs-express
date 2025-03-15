@@ -7,5 +7,5 @@ import {UserModel} from "@prisma/client";
 export interface UsersServiceInterface {
     createUser: (dto: UserRegisterDto) => Promise<UserModel | null>;
     register: (req: Request, res: Response, next: NextFunction) => void;
-    validateUser: (dto:UserLoginDto) => boolean;
+    validateUser: (dto:UserLoginDto) => Promise<boolean>;
 }
