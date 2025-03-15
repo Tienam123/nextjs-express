@@ -5,6 +5,8 @@ services:
       context: ./frontend
       dockerfile: Dockerfile
     container_name: nextjs
+    depends_on:
+      - node
     networks:
       - my-network
 

@@ -1,0 +1,1 @@
+export const API_URL: string = "http://host.docker.internal:9000";

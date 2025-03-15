@@ -1,15 +1,24 @@
 "use client"
 import {FaRegTrashAlt} from "react-icons/fa";
+import {PostType} from "@/types/posts";
+import {deletePostAction} from "@/actions/contacts";
 
 export interface ContactItemProps {
-
+    post: PostType
 }
 
 const ContactItem = ({post}: ContactItemProps) => {
 
-    const handleDeleteItem = () => {
-
+    const handleDeleteItem = async () => {
+        try {
+         await deletePostAction(post.id);
+        } catch (e) {
+            if (e instanceof Error) {
+                console.error(e.message)
+            }
+        }
     }
+
     return (
         <li className="border border-solid border-gray-300 p-2 rounded-xl flex justify-between" key={post.id}>
             <div className="">
