@@ -7,6 +7,7 @@ import {ILogger} from "./logger/logger.interface";
 import {inject, injectable} from "inversify";
 import {TYPES} from "./types";
 import 'reflect-metadata'
+import {PrismaService} from "./database/prisma.service";
 
 
 @injectable()
@@ -18,7 +19,8 @@ export class App {
     constructor(
         @inject(TYPES.LoggerService) private logger: ILogger,
         @inject(TYPES.UsersController) private usersController: UsersController,
-        @inject(TYPES.ExceptionFilter) private readonly exceptionFilter: ExceptionFilter
+        @inject(TYPES.ExceptionFilter) private readonly exceptionFilter: ExceptionFilter,
+        @inject(TYPES.PrismaService) private prismaService: PrismaService
     ) {
         this.app = express();
         this.port = 9000;
@@ -43,6 +45,7 @@ export class App {
         this.useMiddleware();
         this.useRoutes();
         this.useExceptionFilters()
+        await this.prismaService.connect()
         this.server = this.app.listen(this.port);
         this.logger.log(`🚀 Сервер запущен на http://localhost:${this.port}`)
 

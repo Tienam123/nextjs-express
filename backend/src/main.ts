@@ -8,6 +8,7 @@ import {TYPES} from "./types";
 import {IExceptionFilter} from "./erorrs/exception.filter.interface";
 import {UsersService} from "./users/users.service";
 import {UsersServiceInterface} from "./users/users.service.interface";
+import {PrismaService} from "./database/prisma.service";
 
 export interface Bootstrap {
     appContainer: Container;
@@ -19,6 +20,7 @@ export const appBindings = new ContainerModule((container: ContainerModuleLoadOp
     container.bind<IExceptionFilter>(TYPES.ExceptionFilter).to(ExceptionFilter);
     container.bind<UsersController>(TYPES.UsersController).to(UsersController);
     container.bind<UsersServiceInterface>(TYPES.UsersService).to(UsersService);
+    container.bind<PrismaService>(TYPES.PrismaService).to(PrismaService);
     container.bind<App>(TYPES.Application).to(App);
 })
 
